@@ -6,17 +6,25 @@
 /*   By: diomende <diomende@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/16 16:25:12 by diomende          #+#    #+#             */
-/*   Updated: 2025/12/16 16:25:13 by diomende         ###   ########.fr       */
+/*   Updated: 2025/12/17 16:15:11 by diomende         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int	ft_atoi(const char *nptr)
+int	ft_isdigit(int c)
+{
+	if (c >= 48 && c <= 57)
+		return (1);
+	else
+		return (0);
+}
+
+long	ft_atoi(const char *nptr)
 {
 	unsigned int	i;
-	unsigned int	sign;
-	int				result;
+	int				sign;
+	long			result;
 
 	i = 0;
 	sign = 1;
