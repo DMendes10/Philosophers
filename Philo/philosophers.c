@@ -6,7 +6,7 @@
 /*   By: diomende <diomende@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/16 16:25:05 by diomende          #+#    #+#             */
-/*   Updated: 2025/12/17 20:17:49 by diomende         ###   ########.fr       */
+/*   Updated: 2025/12/18 17:22:53 by diomende         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,39 @@ void	clean_master(t_master **master)
 	free (*master);
 }
 
+void	grab_forks(t_philo *philo)
+{
+	
+}
+
+void	*philo_routine(void *phil)
+{
+	t_philo *philo;
+	
+	philo = (t_philo *)phil;
+	grab_forks(philo);
+	pthread_mutex_lock (&philo->mutex->writer);
+	printf ("%d\n", philo->phil_id);
+	pthread_mutex_unlock (&philo->mutex->writer);
+	return (NULL);
+}
+
+void	start_diner(t_master *master)
+{
+	int i;
+
+	i = 0;
+	while (i < master->info->phil_count)
+	{
+		pthread_create (&master->philo_arr[i].thread, NULL, &philo_routine, &master->philo_arr[i]);
+		i++;
+	}
+	i = 0;
+	while (i < master->info->phil_count)
+		pthread_join (master->philo_arr[i++].thread, NULL);
+	// waiter_routine(master);
+}
+
 int	main(int ac, char **av)
 {
 	t_master	*master;
@@ -82,10 +115,7 @@ int	main(int ac, char **av)
 		return (1);
 	if (init_info(master, av) || init_mutex(master) || init_table(master))
 		return (1);
-	for (int i = 0; i < master->info->phil_count ;i++)
-		printf ("%d\n", master->philo_arr[i].phil_id);
-	start_diner();
+	start_diner(master);
 	clean_master (&master);
 	return (0);
-	// start_dinner(mast)
 }

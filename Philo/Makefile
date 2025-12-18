@@ -5,7 +5,7 @@ CFLAGS := -Wall -Wextra -Werror -g
 
 OBJDIR := objs
 
-SRCS := philosophers.c helper_functions.c initializer.c
+SRCS := helper_functions.c initializer.c philosophers.c
 OBJS := $(patsubst %.c,$(OBJDIR)/%.o,$(SRCS))
 
 all: $(NAME)

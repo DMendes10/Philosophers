@@ -6,7 +6,7 @@
 /*   By: diomende <diomende@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/16 16:25:10 by diomende          #+#    #+#             */
-/*   Updated: 2025/12/17 19:53:55 by diomende         ###   ########.fr       */
+/*   Updated: 2025/12/18 16:59:43 by diomende         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 typedef struct s_mutex
 {
 	pthread_mutex_t	*forks;
+	pthread_mutex_t	writer;
 }	t_mutex;
 
 typedef struct s_info
@@ -38,6 +39,8 @@ typedef struct s_info
 
 typedef struct s_philo
 {
+	t_info			*info;
+	t_mutex			*mutex;
 	pthread_t		thread;
 	pthread_mutex_t	*l_fork;
 	pthread_mutex_t	*r_fork;
@@ -60,5 +63,7 @@ int		init_info(t_master *master, char **av);
 int		init_mutex(t_master *master);
 int		init_table(t_master *master);
 void	prep_philo(t_master *master, t_philo *philo, int i);
+void	start_diner(t_master *master);
+
 
 #endif

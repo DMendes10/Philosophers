@@ -6,7 +6,7 @@
 /*   By: diomende <diomende@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/17 18:07:54 by diomende          #+#    #+#             */
-/*   Updated: 2025/12/17 20:11:46 by diomende         ###   ########.fr       */
+/*   Updated: 2025/12/18 17:00:49 by diomende         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,15 +52,19 @@ int	init_mutex(t_master *master)
 		}
 		i++;
 	}
+	if (pthread_mutex_init (&master->mutex->writer, NULL) != 0)
+		pthread_mutex_destroy (&master->mutex->writer);
 	return (0);
 }
 
 void	prep_philo(t_master *master, t_philo *philo, int i)
 {
+	philo->info = master->info;
+	philo->mutex = master->mutex;
 	philo->eat_count = 0;
 	philo->philo_full = 0;
 	philo->lst_eat_tm = 0;
-	philo->phil_id = i;
+	philo->phil_id = i + 1;
 	philo->l_fork = &master->mutex->forks[i];
 	if (i == 0)
 		philo->r_fork = &master->mutex->forks[master->info->phil_count];
