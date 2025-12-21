@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initializer.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diomende <diomende@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: diogo <diogo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/17 18:07:54 by diomende          #+#    #+#             */
-/*   Updated: 2025/12/18 17:00:49 by diomende         ###   ########.fr       */
+/*   Updated: 2025/12/21 18:31:04 by diogo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ int	init_info(t_master *master, char **av)
 	if (atoi (av[1]) < 0 || atoi (av[2]) < 0 || atoi (av[3]) \
 < 0 || atoi (av[4]) < 0 || (av[5] && (atoi (av[5]) < 0)))
 		return (1);
+	master->info->all_philos_alive = true;
+	master->info->start_time = get_time ();
 	master->info->phil_count = atoi (av[1]);
 	master->info->tm_die = ft_atoi (av[2]);
 	master->info->tm_eat = ft_atoi (av[3]);
@@ -52,8 +54,12 @@ int	init_mutex(t_master *master)
 		}
 		i++;
 	}
-	if (pthread_mutex_init (&master->mutex->writer, NULL) != 0)
-		pthread_mutex_destroy (&master->mutex->writer);
+	if (pthread_mutex_init (&master->mutex->write_lock, NULL) != 0)
+		pthread_mutex_destroy (&master->mutex->write_lock);
+	if (pthread_mutex_init (&master->mutex->meal_lock, NULL) != 0)
+		pthread_mutex_destroy (&master->mutex->meal_lock);
+	if (pthread_mutex_init (&master->mutex->meal_lock, NULL) != 0)
+		pthread_mutex_destroy (&master->mutex->meal_lock);
 	return (0);
 }
 
@@ -62,7 +68,7 @@ void	prep_philo(t_master *master, t_philo *philo, int i)
 	philo->info = master->info;
 	philo->mutex = master->mutex;
 	philo->eat_count = 0;
-	philo->philo_full = 0;
+	philo->philo_hunger = IS_HUNGRY;
 	philo->lst_eat_tm = 0;
 	philo->phil_id = i + 1;
 	philo->l_fork = &master->mutex->forks[i];

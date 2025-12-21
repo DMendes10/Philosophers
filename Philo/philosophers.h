@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosophers.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diomende <diomende@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: diogo <diogo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/16 16:25:10 by diomende          #+#    #+#             */
-/*   Updated: 2025/12/18 16:59:43 by diomende         ###   ########.fr       */
+/*   Updated: 2025/12/21 18:51:46 by diogo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,19 +18,30 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/time.h>
+#include <stdbool.h>
 
 # define ERR_ARG_NBR "ERROR: Wrong number of arguments\n"
 # define ERR_INV_ARG "ERROR: Args must be a valid numeric value\n"
+# define FORK_TXT "has taken a fork"
+# define EAT_TXT "is eating"
+# define SLEEP_TXT "is sleeping"
+# define THINK_TXT "is thinking"
+# define IS_FULL 1
+# define IS_HUNGRY 0
 
 typedef struct s_mutex
 {
 	pthread_mutex_t	*forks;
-	pthread_mutex_t	writer;
+	pthread_mutex_t	write_lock;
+	pthread_mutex_t meal_lock;
+	pthread_mutex_t death_lock;
 }	t_mutex;
 
 typedef struct s_info
 {
 	int		phil_count;
+	bool	all_philos_alive;
+	long	start_time;
 	long	tm_die;
 	long	tm_eat;
 	long	tm_sleep;
@@ -47,7 +58,7 @@ typedef struct s_philo
 	long			lst_eat_tm;
 	int				phil_id;
 	int				eat_count;
-	int				philo_full;
+	int				philo_hunger;
 }	t_philo;
 
 typedef struct s_master
@@ -64,6 +75,11 @@ int		init_mutex(t_master *master);
 int		init_table(t_master *master);
 void	prep_philo(t_master *master, t_philo *philo, int i);
 void	start_diner(t_master *master);
-
+long	get_time(void);
+void	philo_eats(t_philo *philo);
+void	grab_forks(t_philo *philo);
+void	*philo_routine(void *phil);
+void	write_action(char *action, t_philo *philo);
+void	usleep_manager(t_philo *philo, int time);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosophers.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diomende <diomende@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: diogo <diogo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/16 16:25:05 by diomende          #+#    #+#             */
-/*   Updated: 2025/12/18 17:22:53 by diomende         ###   ########.fr       */
+/*   Updated: 2025/12/21 19:17:09 by diogo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,21 +60,19 @@ void	clean_master(t_master **master)
 	free (*master);
 }
 
-void	grab_forks(t_philo *philo)
+bool	check_dead(t_philo *philo)
 {
+	bool	result;
 	
+	pthread_mutex_lock (&philo->mutex->death_lock);
+	result = philo->info->all_philos_alive;
+	pthread_mutex_unlock (&philo->mutex->death_lock);
+	return (result);
 }
 
-void	*philo_routine(void *phil)
+void waiter_routine (t_master *master)
 {
-	t_philo *philo;
 	
-	philo = (t_philo *)phil;
-	grab_forks(philo);
-	pthread_mutex_lock (&philo->mutex->writer);
-	printf ("%d\n", philo->phil_id);
-	pthread_mutex_unlock (&philo->mutex->writer);
-	return (NULL);
 }
 
 void	start_diner(t_master *master)
@@ -87,10 +85,10 @@ void	start_diner(t_master *master)
 		pthread_create (&master->philo_arr[i].thread, NULL, &philo_routine, &master->philo_arr[i]);
 		i++;
 	}
+	waiter_routine(master);
 	i = 0;
 	while (i < master->info->phil_count)
 		pthread_join (master->philo_arr[i++].thread, NULL);
-	// waiter_routine(master);
 }
 
 int	main(int ac, char **av)
